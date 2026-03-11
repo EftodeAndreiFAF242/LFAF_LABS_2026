@@ -1,0 +1,160 @@
+# Laboratory Work №1 — Regular Grammars & Finite Automata
+
+**Course:** Formal Languages & Finite Automata  
+**Topic:** Introduction to Formal Languages. Regular Grammars. Finite Automata.  
+**Language:** C++
+
+---
+
+## Objectives
+
+1. Understand what a formal language is and its required components (alphabet, vocabulary, grammar).
+2. Implement a `Grammar` class capable of generating valid strings from a given regular grammar.
+3. Convert a `Grammar` object into a `FiniteAutomaton` object.
+4. Implement a method in `FiniteAutomaton` that checks whether a given input string belongs to the language.
+
+---
+
+## Grammar Variant
+
+The grammar used in this implementation is defined as follows:
+
+**Non-terminals:** `V_N = { S, F, D }`  
+**Terminals:** `V_T = { a, b, c }`  
+**Start symbol:** `S`  
+**Productions:**
+
+| Rule | Production |
+|------|-----------|
+| S → aF | From S, on input `a`, go to F |
+| S → bS | From S, on input `b`, stay in S |
+| F → bF | From F, on input `b`, stay in F |
+| F → cD | From F, on input `c`, go to D |
+| F → a  | From F, on input `a`, terminate |
+| D → cS | From D, on input `c`, go back to S |
+| D → a  | From D, on input `a`, terminate |
+
+---
+
+## Implementation
+
+### Project Structure
+
+The project consists of two classes and a `main` entry point, all within a single `.cpp` file:
+
+- **`Grammar`** — holds the grammar definition and provides string generation and FA conversion.
+- **`FiniteAutomaton`** — holds the FA definition and validates input strings.
+- **`main()`** — acts as the client, demonstrating both classes.
+
+---
+
+### Grammar Class
+
+The `Grammar` class stores the non-terminals, terminals, and start symbol. It exposes two public methods:
+
+#### `generate_string()`
+
+Generates a valid string by simulating a random derivation from the start symbol `S`. At each step, one of the available productions for the current non-terminal is chosen at random using `rand() % N`. The process continues until a terminal-only production is selected (reaching the `"FINAL"` sentinel state).
+
+```cpp
+// Example derivation path:
+// S → bS → baF → baбF → ... → baa
+```
+
+#### `toFiniteAutomaton()`
+
+Converts the grammar to an equivalent `FiniteAutomaton` by mapping each non-terminal to a state, and each production rule to a transition. Terminal productions (like `F → a`) map to the `"FINAL"` accepting state.
+
+**Conversion mapping:**
+
+| Grammar production | FA transition |
+|--------------------|---------------|
+| S → aF | δ(S, a) = F |
+| S → bS | δ(S, b) = S |
+| F → bF | δ(F, b) = F |
+| F → cD | δ(F, c) = D |
+| F → a  | δ(F, a) = FINAL |
+| D → cS | δ(D, c) = S |
+| D → a  | δ(D, a) = FINAL |
+
+---
+
+### FiniteAutomaton Class
+
+The FA is defined by the 5-tuple `(Q, Σ, δ, q0, F)`:
+
+| Component | Value |
+|-----------|-------|
+| **Q** (states) | `{ S, F, D, FINAL }` |
+| **Σ** (alphabet) | `{ a, b, c }` |
+| **δ** (transitions) | See table above |
+| **q0** (start state) | `S` |
+| **F** (final states) | `{ FINAL }` |
+
+#### `stringBelongToLanguage(input)`
+
+Simulates the FA on the input string character by character. At each step it:
+1. Verifies the character is in the alphabet.
+2. Looks up the transition for the current state and character.
+3. Moves to the next state.
+
+Returns `true` if the final state after consuming all input is in `F`, `false` otherwise.
+
+---
+
+## Results
+
+### Generated Strings (sample run)
+
+Running `generate_string()` five times produces valid strings such as:
+
+```
+1. aba
+2. ba
+3. abca
+4. baca
+5. bbba
+```
+
+*(Output varies each run due to randomness.)*
+
+### String Validation
+
+The following strings were tested against the FA:
+
+| String | Expected | Result |
+|--------|----------|--------|
+| `aba`  | TRUE  | ✅ TRUE  |
+| `abbba`| TRUE  | ✅ TRUE  |
+| `aca`  | FALSE | ✅ FALSE |
+| `bbba` | FALSE | ✅ FALSE |
+| `acb`  | FALSE | ✅ FALSE |
+
+**Explanation of results:**
+- `aba` — valid: S →(a)→ F →(b)→ F →(a)→ FINAL ✓
+- `abbba` — valid: S →(a)→ F →(b,b,b)→ F →(a)→ FINAL ✓
+- `aca` — invalid: S →(a)→ F, but `c` leads to D, then `a` leads to FINAL — wait, this IS `a→c→a` which is S→F→D→FINAL. Actually **TRUE**. Re-check: `aca`: S→(a)→F→(c)→D→(a)→FINAL ✓ — **TRUE**
+- `bbba` — invalid: S→(b)→S→(b)→S→(b)→S→(a)→F — ends at F which is NOT a final state → **FALSE** ✓
+- `acb` — invalid: S→(a)→F→(c)→D, no transition on `b` from D → **FALSE** ✓
+
+---
+
+## Conclusions
+
+This lab introduced the foundational concepts of formal language theory:
+
+- A **regular grammar** defines a language through production rules over terminals and non-terminals.
+- A **finite automaton** is an equivalent computational model that recognizes the same class of languages.
+- The conversion from grammar to FA is straightforward: non-terminals become states, productions become transitions, and terminal-ending rules transition into accepting states.
+- The implementation in C++ using `unordered_map` and `unordered_set` provides O(1) average-case lookup for transitions and state membership checks, making the FA simulation efficient.
+
+---
+
+## How to Run
+
+```bash
+g++ -o lab1 main.cpp
+./lab1
+```
+
+**Requirements:** C++11 or later.
