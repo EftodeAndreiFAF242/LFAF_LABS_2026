@@ -1,0 +1,244 @@
+# Formal Languages & Finite Automata — Laboratory Work
+
+## Overview
+
+This project implements a **Finite Automaton (FA)** and **Regular Grammar** system in **C++**.
+The program demonstrates several important concepts from **Formal Languages and Automata Theory**.
+
+The implementation includes:
+
+* Converting a **Finite Automaton to a Regular Grammar**
+* **Classifying grammars** according to the **Chomsky hierarchy**
+* Checking if a **Finite Automaton is deterministic**
+* Converting a **Non-Deterministic Finite Automaton (NDFA)** to a **Deterministic Finite Automaton (DFA)** using **subset construction**
+* Exporting the automaton as a **Graphviz DOT file** for graphical visualization
+
+This program is intended for **educational purposes** in courses related to **Formal Languages and Automata Theory**.
+
+---
+
+# Project Structure
+
+The program is implemented in a single C++ source file and contains the following main components:
+
+### 1. FiniteAutomaton Class
+
+Represents a finite automaton with the following elements:
+
+* **States**
+* **Alphabet**
+* **Transition function**
+* **Start state**
+* **Final states**
+
+Main methods:
+
+* `toRegularGrammar()` – converts the automaton to a regular grammar
+* `isDeterministic()` – checks whether the automaton is deterministic
+* `toDFA()` – converts an NDFA to a DFA
+* `printTable()` – prints a formatted transition table
+* `exportDOT()` – exports the automaton to a Graphviz DOT file
+
+---
+
+### 2. Grammar Class
+
+Represents a formal grammar with:
+
+* **Non-terminals**
+* **Terminals**
+* **Productions**
+* **Start symbol**
+
+Main methods:
+
+* `print()` – prints grammar components and production rules
+* `classify()` – determines the grammar type using the **Chomsky hierarchy**
+
+---
+
+### 3. Grammar Classification
+
+The program determines the grammar type:
+
+| Type   | Name                      |
+| ------ | ------------------------- |
+| Type 3 | Regular Grammar           |
+| Type 2 | Context-Free Grammar      |
+| Type 1 | Context-Sensitive Grammar |
+| Type 0 | Unrestricted Grammar      |
+
+---
+
+# Automaton Used in the Program
+
+States:
+
+```
+{q0, q1, q2, q3}
+```
+
+Alphabet:
+
+```
+{a, b, c}
+```
+
+Start State:
+
+```
+q0
+```
+
+Final States:
+
+```
+{q2}
+```
+
+Transitions:
+
+```
+q0 --b--> q0
+q0 --a--> q1
+q1 --c--> q1
+q1 --a--> q2
+q2 --a--> q3
+q3 --a--> q1
+q3 --a--> q3
+```
+
+The transition `q3 --a--> {q1, q3}` makes the automaton **non-deterministic**.
+
+---
+
+# Program Workflow
+
+The program executes the following steps:
+
+### 1. Convert FA → Regular Grammar
+
+Transitions are transformed into grammar productions.
+
+Example:
+
+```
+q0 → a q1
+q1 → a
+```
+
+If a transition leads to a **final state**, a production containing only a **terminal symbol** is generated.
+
+---
+
+### 2. Classify the Grammar
+
+The grammar is analyzed and classified according to the **Chomsky hierarchy**.
+
+---
+
+### 3. Check Determinism
+
+The program verifies if the automaton is deterministic.
+
+Example output:
+
+```
+Is deterministic: NO
+Reason: δ(q3, a) = {q1, q3}
+```
+
+---
+
+### 4. Convert NDFA → DFA
+
+The **subset construction algorithm** is used to convert the NDFA into an equivalent DFA.
+
+Each DFA state represents a **set of NDFA states**.
+
+Example:
+
+```
+{q0}
+{q1}
+{q2}
+{q1,q3}
+```
+
+---
+
+### 5. Generate Graph Visualization
+
+The program exports automata as **Graphviz DOT files**:
+
+```
+fa_original.dot
+fa_dfa.dot
+```
+
+These files can be converted into images.
+
+Example command:
+
+```
+dot -Tpng fa_original.dot -o fa_original.png
+dot -Tpng fa_dfa.dot -o fa_dfa.png
+```
+
+---
+
+# How to Compile and Run
+
+### Compile
+
+```
+g++ main.cpp -o automaton
+```
+
+### Run
+
+```
+./automaton
+```
+
+---
+
+# Example Output
+
+The program will display:
+
+* Grammar rules
+* Grammar classification
+* Transition tables
+* Determinism verification
+* DFA construction results
+* Generated DOT files
+
+---
+
+# Requirements
+
+* C++17 or later
+* A C++ compiler (GCC, Clang, or MSVC)
+* Optional: **Graphviz** for visualizing automata
+
+Install Graphviz:
+
+```
+sudo apt install graphviz
+```
+
+---
+
+# Educational Purpose
+
+This project demonstrates the relationship between:
+
+* **Finite Automata**
+* **Regular Grammars**
+* **Chomsky Hierarchy**
+* **Deterministic and Non-Deterministic Automata**
+
+It can be used as a **learning tool** for students studying **Formal Languages and Automata Theory**.
+
+---
