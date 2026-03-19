@@ -1,4 +1,4 @@
-# 🔮 ArcaneScript Lexer
+#  ArcaneScript Lexer
 
 **Author:** Eftode Andrei  
 **Course:** Formal Languages & Finite Automata  
@@ -196,3 +196,13 @@ Expected output: **25 tests, 0 failures.**
 - **Keyword recognition** — identifiers are read fully first, then checked against a keyword table. This means `summons` correctly becomes an `IDENTIFIER` while `summon` becomes a keyword — there is no ambiguity.
 - **Lookahead** — the `_peek()` method reads one character ahead without consuming it, which is essential for correctly identifying two-character operators like `==`, `!=`, `**`, `&&`, and `||`.
 - **Error handling** — `LexerError` is raised with line and column information when the source is malformed, for example when a string literal is never closed.
+
+---
+
+## Conclusion
+
+This laboratory work successfully delivered a fully functional lexical analyzer for ArcaneScript — a custom-designed, magic-themed scripting language. The implementation covers all core responsibilities of a real-world lexer: character-by-character scanning, one-character lookahead for multi-character operators, keyword disambiguation, string and number literal parsing, comment handling, and precise source location tracking on every emitted token.
+
+
+
+
